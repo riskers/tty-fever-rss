@@ -1,0 +1,44 @@
+version: "3"
+services:
+  database.postgres:
+    image: sameersbn/postgresql:latest
+    container_name: postgres
+    environment:
+      - PG_PASSWORD=Gaoyibo199100 # your password
+      - DB_EXTENSION=pg_trgm
+    volumes:
+      - ~/DB_Storage/postgres/:/var/lib/postgresql/
+    restart: always
+
+  service.rss:
+    image: wangqiru/ttrss:latest
+    container_name: ttrss
+    ports:
+      - 181:80
+    environment:
+      - SELF_URL_PATH=http://localhost:181/ # please change to your own domain: [本机搭建应为 localhost:181 | ECS 搭建应为 {分配的公网ip}:181]
+      - DB_HOST=database.postgres
+      - DB_PORT=5432
+      - DB_NAME=ttrss
+      - DB_USER=postgres
+      - DB_PASS=Gaoyibo199100 # your password
+    stdin_open: true
+    tty: true
+    restart: always
+    command: sh -c 'sh /wait-for database.postgres:5432 -- php /configure-db.php && exec s6-svscan /etc/s6/'
+
+  service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` on TTRSS plugin setting page
+    image: wangqiru/mercury-parser-api:latest
+    container_name: mercury
+    expose:
+      - 3000
+    restart: always
+
+  service.opencc: # set OpenCC API endpoint to `service.opencc:3000` on TTRSS plugin setting page
+    image: wangqiru/opencc-api-server:latest
+    container_name: opencc
+    environment:
+      NODE_ENV: production
+    expose:
+      - 3000
+    restart: always
