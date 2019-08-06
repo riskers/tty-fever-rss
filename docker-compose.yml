@@ -4,7 +4,7 @@ services:
     image: sameersbn/postgresql:latest
     container_name: postgres
     environment:
-      - PG_PASSWORD=Gaoyibo199100 # your password
+      - PG_PASSWORD=password # your password
       - DB_EXTENSION=pg_trgm
     volumes:
       - ~/DB_Storage/postgres/:/var/lib/postgresql/
