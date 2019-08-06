@@ -21,7 +21,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=ttrss
       - DB_USER=postgres
-      - DB_PASS=Gaoyibo199100 # your password
+      - DB_PASS=password # your password
     stdin_open: true
     tty: true
     restart: always
